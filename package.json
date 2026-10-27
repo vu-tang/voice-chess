@@ -1,0 +1,9 @@
+{
+  "name": "voice-chess",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/voice.test.mjs",
+    "serve": "node scripts/serve.mjs"
+  }
+}

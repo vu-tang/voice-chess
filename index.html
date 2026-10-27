@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ボイスチェス</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>♞ ボイスチェス</h1>
+    <div class="who">
+      <span id="account"></span>
+      <button id="loginBtn" class="primary" hidden>Lichess でログイン</button>
+      <button id="logoutBtn" hidden>ログアウト</button>
+    </div>
+  </header>
+
+  <div id="notice" role="alert" hidden></div>
+
+  <section id="welcome" class="card" hidden>
+    <h2>声で指す Lichess</h2>
+    <p>Lichess の CPU（AI）と、音声で対局します。「イー フォー」「ナイト エフ スリー」のように話すと、盤上の合法手と照らして指し手を決めます。</p>
+    <p>はじめに Lichess でログインして、このアプリに対局の許可（<code>board:play</code> / <code>challenge:write</code>）を与えてください。パスワードはこのアプリには渡りません。</p>
+  </section>
+
+  <main id="app" hidden>
+    <div class="board-col">
+      <div class="bar"><span id="oppName" class="name">相手</span><span id="oppClock" class="clock"></span></div>
+      <div id="board" aria-label="チェス盤"></div>
+      <div class="bar"><span id="myName" class="name">あなた</span><span id="myClock" class="clock"></span></div>
+    </div>
+
+    <div class="side-col">
+      <div class="card">
+        <div id="status" class="status">対局していません</div>
+        <div id="pendingBox" hidden>
+          <span id="pendingText"></span>
+          <button id="yesBtn" class="primary">はい</button>
+          <button id="noBtn">いいえ</button>
+        </div>
+        <ol id="moves" class="moves"></ol>
+        <button id="resignBtn" hidden>投了 / 中止</button>
+      </div>
+
+      <div class="card">
+        <h2>音声</h2>
+        <div class="row">
+          <button id="micBtn" class="primary">🎤 マイクをオン</button>
+          <label><input type="checkbox" id="optConfirm" checked> 指す前に確認する</label>
+          <label><input type="checkbox" id="optSpeak" checked> 読み上げ</label>
+        </div>
+        <div id="heard" class="heard">（認識した言葉がここに出ます）</div>
+        <div id="feedback" class="feedback"></div>
+        <form id="cmdForm" class="row">
+          <input id="cmdInput" type="text" placeholder="マイクなしで試す: ナイト f3 / e4 / はい" autocomplete="off">
+          <button type="submit">送信</button>
+        </form>
+        <details>
+          <summary>話し方の例</summary>
+          <ul class="help">
+            <li>指す: 「<b>イー フォー</b>」「<b>ナイト エフ スリー</b>」「<b>e2 e4</b>」</li>
+            <li>駒名を言わないとポーン。同じ行き先に複数の駒が行けるときは「<b>ビー ナイト ディー ツー</b>」のように出発ファイルを前に付けます。聞き返されたら「<b>ビー</b>」だけでも可</li>
+            <li>取る: 「<b>イー とる ディー ゴ</b>」</li>
+            <li>キャスリング: 「<b>ショート キャスリング</b>」「<b>ロング キャスリング</b>」</li>
+            <li>成る: 「<b>イー エイト</b>」でクイーン、「<b>イー エイト ナイト</b>」で指定</li>
+            <li>確認: 「<b>はい</b>」で指す、「<b>いいえ</b>」で取り消し。「<b>投了</b>」は確認あり</li>
+            <li>ファイルの読み: エー・ビー・シー・ディー・イー・エフ・ジー・エイチ ／ 数字: イチ・ニ・サン・ヨン・ゴ・ロク・ナナ・ハチ</li>
+          </ul>
+        </details>
+      </div>
+
+      <div id="newGame" class="card">
+        <h2>新しい対局（CPU）</h2>
+        <form id="newGameForm" class="grid">
+          <label>強さ
+            <select id="optLevel">
+              <option value="1">1（最弱）</option><option value="2">2</option><option value="3" selected>3</option>
+              <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8（最強）</option>
+            </select>
+          </label>
+          <label>あなたの色
+            <select id="optColor">
+              <option value="random">おまかせ</option><option value="white">白</option><option value="black">黒</option>
+            </select>
+          </label>
+          <label>持ち時間
+            <select id="optClock">
+              <option value="0+0">無制限</option>
+              <option value="600+0" selected>10分</option>
+              <option value="900+10">15分 + 10秒</option>
+              <option value="1800+0">30分</option>
+            </select>
+          </label>
+          <button type="submit" class="primary">対局開始</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <small>盤面ロジック: <a href="https://github.com/jhlywa/chess.js">chess.js</a>（BSD-2）／ 対局: <a href="https://lichess.org">Lichess</a> Board API ／ 音声認識はブラウザの Web Speech API（Chrome / Edge。音声は提供元のクラウドで処理されます）</small>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
